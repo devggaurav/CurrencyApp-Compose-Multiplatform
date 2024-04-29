@@ -1,6 +1,8 @@
 package data.remote.api
 
-class CurrencyApiService {
+import domain.CurrencyApiService
+
+class CurrencyApiServiceImpl : CurrencyApiService {
 
     companion object{
         const val ENDPOINT = "https://api.currencyapi.com/v3/latest"
