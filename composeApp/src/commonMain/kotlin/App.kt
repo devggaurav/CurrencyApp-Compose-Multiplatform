@@ -8,6 +8,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.navigator.Navigator
+import di.initializeKoin
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -19,10 +20,11 @@ import ui.theme.lightScheme
 @Composable
 @Preview
 fun App() {
+    initializeKoin()
     val colors = if (!isSystemInDarkTheme()) lightScheme else darkScheme
 
     MaterialTheme(colorScheme = colors) {
-          Navigator(HomeScreen())
+        Navigator(HomeScreen())
 
 
     }
