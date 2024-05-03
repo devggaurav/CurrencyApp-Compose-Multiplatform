@@ -65,6 +65,7 @@ class CurrencyApiServiceImpl(
                 //Persist a timeStamp
                 val lastUpdated = apiResponse.meta.lastUpdatedAt
                 preferenceRepository.saveLastUpdated(lastUpdated)
+
                 RequestState.Success(data = availableCurrencies)
             } else {
                 RequestState.Error(message = "Http Error code: ${response.status}")

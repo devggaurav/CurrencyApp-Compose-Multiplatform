@@ -1,5 +1,6 @@
 package data.local
 
+import com.russhwolf.settings.ExperimentalSettingsApi
 import com.russhwolf.settings.ObservableSettings
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.coroutines.FlowSettings
@@ -14,7 +15,7 @@ import kotlinx.datetime.toLocalDateTime
 // Created by Code For Android on 02/05/24.
 // Copyright (c) 2024 CFA. All rights reserved.
 //
-
+@OptIn(ExperimentalSettingsApi::class)
 class PreferencesImpl(private val settings: Settings) : PreferenceRepository {
 
 
