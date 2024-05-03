@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import domain.CurrencyApiService
+import domain.MongoRepository
 import domain.PreferenceRepository
 import domain.model.Currency
 import domain.model.RateStatus
@@ -24,6 +25,7 @@ sealed class HomeUiEvent {
 
 class HomeViewModel(
     private val preferenceRepository: PreferenceRepository,
+    private val mongoRepository: MongoRepository,
     private val api: CurrencyApiService
 ) : ScreenModel {
 

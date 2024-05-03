@@ -1,6 +1,7 @@
 package di
 
 import com.russhwolf.settings.Settings
+import data.local.MongoImpl
 import data.local.PreferencesImpl
 import data.remote.api.CurrencyApiServiceImpl
 import domain.CurrencyApiService
@@ -8,6 +9,7 @@ import domain.PreferenceRepository
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 import presentation.screen.HomeViewModel
+import kotlin.math.sin
 
 
 //
@@ -17,11 +19,13 @@ import presentation.screen.HomeViewModel
 
 val appModule = module {
     single { Settings() }
+    single { MongoImpl() }
     single<PreferenceRepository> { PreferencesImpl(settings = get()) }
     single<CurrencyApiService> { CurrencyApiServiceImpl(preferenceRepository = get()) }
     factory {
         HomeViewModel(
             preferenceRepository = get(),
+            mongoRepository = get(),
             api = get()
         )
     }
