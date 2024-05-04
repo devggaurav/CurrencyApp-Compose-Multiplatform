@@ -5,6 +5,7 @@ import domain.model.Currency
 import domain.model.RequestState
 import io.realm.kotlin.Realm
 import io.realm.kotlin.RealmConfiguration
+import io.realm.kotlin.delete
 import io.realm.kotlin.ext.query
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -47,5 +48,13 @@ class MongoImpl : MongoRepository {
             ?: flow {
                 RequestState.Error(message = "Realm not configured")
             }
+    }
+
+    override suspend fun cleanUp() {
+        realm?.write {
+            val currencyCollection = this.query<Currency>()
+            delete(currencyCollection)
+        }
+
     }
 }

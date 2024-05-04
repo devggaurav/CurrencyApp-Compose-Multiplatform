@@ -5,6 +5,7 @@ import data.local.MongoImpl
 import data.local.PreferencesImpl
 import data.remote.api.CurrencyApiServiceImpl
 import domain.CurrencyApiService
+import domain.MongoRepository
 import domain.PreferenceRepository
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
@@ -19,7 +20,7 @@ import kotlin.math.sin
 
 val appModule = module {
     single { Settings() }
-    single { MongoImpl() }
+    single<MongoRepository> { MongoImpl() }
     single<PreferenceRepository> { PreferencesImpl(settings = get()) }
     single<CurrencyApiService> { CurrencyApiServiceImpl(preferenceRepository = get()) }
     factory {
