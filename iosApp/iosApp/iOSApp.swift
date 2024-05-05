@@ -1,5 +1,6 @@
 import SwiftUI
 import ComposeApp
+
 @main
 struct iOSApp: App {
 
@@ -9,7 +10,7 @@ struct iOSApp: App {
 
 	var body: some Scene {
 		WindowGroup {
-			ContentView().ignoreSafeArea()
+            ContentView().ignoresSafeArea()
 		}
 	}
 }
