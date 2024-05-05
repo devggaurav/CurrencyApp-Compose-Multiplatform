@@ -16,6 +16,7 @@ import cafe.adriel.voyager.koin.getScreenModel
 import data.remote.api.CurrencyApiServiceImpl
 import domain.model.CurrencyType
 import presentation.component.CurrencyPickerDialog
+import presentation.component.HomeBody
 import presentation.component.HomeHeader
 import ui.theme.surfaceColor
 
@@ -31,20 +32,34 @@ class HomeScreen : Screen {
         val allCurrencies = viewModel.allCurrencies
 
 
-
         var selectedCurrencyType: CurrencyType by remember {
             mutableStateOf(CurrencyType.None)
         }
 
-        var dialogOpened by remember { mutableStateOf(true) }
-        if (dialogOpened) {
+        var dialogOpened by remember { mutableStateOf(false) }
+        if (dialogOpened && selectedCurrencyType != CurrencyType.None) {
             CurrencyPickerDialog(
                 currencies = allCurrencies,
                 currencyType = selectedCurrencyType,
-                onPositiveClick = {
+                onConfirmClick = { currencyCode ->
+                    if (selectedCurrencyType is CurrencyType.Source) {
+                        viewModel.sendEvent(
+                            HomeUiEvent.SaveSourceCurrencyCode(
+                                currencyCode = currencyCode.name
+                            )
+                        )
+                    }else if (selectedCurrencyType is CurrencyType.Target){
+                        viewModel.sendEvent(
+                            HomeUiEvent.SaveTargetCurrencyCode(
+                                currencyCode = currencyCode.name
+                            )
+                        )
+                    }
+                    selectedCurrencyType = CurrencyType.None
                     dialogOpened = false
                 },
                 onDismiss = {
+                    selectedCurrencyType = CurrencyType.None
                     dialogOpened = false
                 }
             )
@@ -71,7 +86,16 @@ class HomeScreen : Screen {
                     )
                 },
                 amount = amount,
-                onAmountChange = { amount = it }
+                onAmountChange = { amount = it },
+                onCurrencyTypeSelect = { currencyType ->
+                    selectedCurrencyType = currencyType
+                    dialogOpened = true
+                }
+            )
+            HomeBody(
+                source = source,
+                target = target,
+                amount = amount
             )
         }
     }

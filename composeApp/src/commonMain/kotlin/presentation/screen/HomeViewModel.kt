@@ -10,9 +10,11 @@ import domain.CurrencyApiService
 import domain.MongoRepository
 import domain.PreferenceRepository
 import domain.model.Currency
+import domain.model.CurrencyCode
 import domain.model.RateStatus
 import domain.model.RequestState
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -26,6 +28,10 @@ import kotlinx.datetime.Clock
 sealed class HomeUiEvent {
     data object RefreshRates : HomeUiEvent()
     data object SwitchCurrencies : HomeUiEvent()
+
+    data class SaveSourceCurrencyCode(val currencyCode: String) : HomeUiEvent()
+
+    data class SaveTargetCurrencyCode(val currencyCode: String) : HomeUiEvent()
 }
 
 class HomeViewModel(
@@ -62,13 +68,23 @@ class HomeViewModel(
 
     fun sendEvent(event: HomeUiEvent) {
         when (event) {
-            HomeUiEvent.RefreshRates -> {
+            is HomeUiEvent.RefreshRates -> {
                 screenModelScope.launch {
                     fetchNewRates()
                 }
             }
-            HomeUiEvent.SwitchCurrencies -> {
+
+            is HomeUiEvent.SwitchCurrencies -> {
                 switchCurrencies()
+
+            }
+
+            is HomeUiEvent.SaveSourceCurrencyCode -> {
+                saveSourceCurrencyCode(event.currencyCode)
+            }
+
+            is HomeUiEvent.SaveTargetCurrencyCode -> {
+                saveTagetCurrencyCode(event.currencyCode)
 
             }
 
@@ -77,6 +93,19 @@ class HomeViewModel(
         }
 
     }
+
+    private fun saveSourceCurrencyCode(code: String) {
+        screenModelScope.launch(Dispatchers.IO) {
+            preferenceRepository.saveSourceCurrencyCode(code)
+        }
+    }
+
+    private fun saveTagetCurrencyCode(code: String) {
+        screenModelScope.launch(Dispatchers.IO) {
+            preferenceRepository.saveTargetCurrencyCode(code)
+        }
+    }
+
 
     private fun switchCurrencies() {
         val source = _sourceCurrency.value
@@ -119,6 +148,7 @@ class HomeViewModel(
             if (localCache.isSuccess()) {
                 if (localCache.getSuccessData().isNotEmpty()) {
                     println("HomeViewModel : DataBase is full")
+                    _allCurrencies.clear()
                     _allCurrencies.addAll(localCache.getSuccessData())
                     if (!preferenceRepository.isDateFresh(
                             Clock.System.now().toEpochMilliseconds()

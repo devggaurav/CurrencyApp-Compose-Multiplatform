@@ -20,7 +20,7 @@ import ui.theme.lightScheme
 @Composable
 @Preview
 fun App() {
-    initializeKoin()
+
     val colors = if (!isSystemInDarkTheme()) lightScheme else darkScheme
 
     MaterialTheme(colorScheme = colors) {
